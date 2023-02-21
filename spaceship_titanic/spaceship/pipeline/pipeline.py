@@ -1,6 +1,13 @@
 import pandas as pd
 import sklearn.pipeline as sk_pipeline
 
+def impute(data):
+    # VIP True most often for Destination-Trappist-1e
+    data['VIP'] = data.apply(lambda row: True if row["Destination"] == "TRAPPIST-1e" else False, axis=1)
+    data["No_Cabin_Indicator"] = data["Cabin"].isnull().astype(int)
+    data["No_Destination_Indicator"] = data["Destination"].isnull().astype(int)
+    return data
+
 def make_pipeline(data):
     data["Age"] = data["Age"].fillna(data["Age"].median())
     data["RoomService"] = data["RoomService"].fillna(data["RoomService"].median()) #TODO: Use mode without NA
