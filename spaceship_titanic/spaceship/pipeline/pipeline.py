@@ -1,19 +1,39 @@
 import pandas as pd
 import sklearn.pipeline as sk_pipeline
 
+# Hints
+# -> Conditional Generation of new column
+# data['VIP'] = data.apply(lambda row: True if row["Destination"] == "TRAPPIST-1e" else False, axis=1)
+# -> Conditional Filling of NAs
+# cond = data["HomePlanet"] == "Earth"
+# data['VIP'] = data['VIP'].fillna(cond.map({True:'manual', False: 'automatic'}))
+
 def impute(data):
-    # VIP True most often for Destination-Trappist-1e
-    data['VIP'] = data.apply(lambda row: True if row["Destination"] == "TRAPPIST-1e" else False, axis=1)
+    # Earth -> VIP = False
+    cond = data["HomePlanet"] != "Earth"
+    data['VIP'] = data['VIP'].fillna(cond.map({True: True, False: False}))
+    # Get indicators
     data["No_Cabin_Indicator"] = data["Cabin"].isnull().astype(int)
+    # Get indicators
     data["No_Destination_Indicator"] = data["Destination"].isnull().astype(int)
     return data
 
 def make_pipeline(data):
+    # Fill NAs
     data["Age"] = data["Age"].fillna(data["Age"].median())
+    # Indicator for RoomService Payment
+    data["RoomService_paid"] = data.apply(lambda row: 1 if row["RoomService"] > 0 else 0, axis=1)
+    # Fill NAs
     data["RoomService"] = data["RoomService"].fillna(data["RoomService"].median()) #TODO: Use mode without NA
+    # Indicator for FoodCourt Payment
+    data["FoodCourt_paid"] = data.apply(lambda row: 1 if row["FoodCourt"] > 0 else 0, axis=1)
+    # Fill NAs
     data["FoodCourt"] = data["FoodCourt"].fillna(data["FoodCourt"].median()) #TODO: Use mode without NA
+    # Fill NAs
     data["ShoppingMall"] = data["ShoppingMall"].fillna(data["ShoppingMall"].median()) #TODO: Use mode without NA
+    # Fill NAs
     data["Spa"] = data["Spa"].fillna(data["Spa"].median()) #TODO: Use mode without NA
+    # Fill NAs
     data["VRDeck"] = data["VRDeck"].fillna(data["VRDeck"].median()) #TODO: Use mode without NA
     # One hot encode HomePlanet
     data = pd.get_dummies(data, prefix=['HomePlanet'], columns = ['HomePlanet'], drop_first=False)
