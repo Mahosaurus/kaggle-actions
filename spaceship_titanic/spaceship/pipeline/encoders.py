@@ -24,6 +24,7 @@ def encode(data: pd.DataFrame) -> dict:
     encoders["Destination"] = encode_generic(data, "Destination")
     encoders["Cabin_Deck"] = encode_generic(data, "Cabin_Deck")
     encoders["Cabin_Side"] = encode_generic(data, "Cabin_Side")
+    encoders["encode_deck_trans_ratio"] = encode_deck_trans_ratio(data)
     return encoders
 
 def decode(data: pd.DataFrame, encoder) -> dict:
@@ -35,4 +36,20 @@ def decode(data: pd.DataFrame, encoder) -> dict:
     data = decode_generic(data, encoder["Destination"], "Destination")
     data = decode_generic(data, encoder["Cabin_Deck"], "Cabin_Deck")
     data = decode_generic(data, encoder["Cabin_Side"], "Cabin_Side")
+    data = decode_deck_trans_ratio(data, encoder["encode_deck_trans_ratio"])
+    return data
+
+def encode_deck_trans_ratio(data):
+    # Total passengers by Deck
+    deck_total_pass = data.groupby('Cabin_Deck').Cabin_Deck.count()
+    # Total Transported by Deck
+    deck_total_transported = data.groupby('Cabin_Deck').Transported.sum()
+    # Dictionary with Deck_transp_ratio
+    deck_transp_ratio = (deck_total_transported / deck_total_pass).to_dict()
+    return deck_transp_ratio
+
+def decode_deck_trans_ratio(data, deck_transp_ratio):
+    # Create Deck_transp_ratio
+    data['deck_transp_ratio'] = data.Cabin_Deck.map(deck_transp_ratio)
+    data['deck_transp_ratio'].fillna(data['deck_transp_ratio'].mean(), inplace=True)
     return data
