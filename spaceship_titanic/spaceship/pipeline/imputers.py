@@ -8,28 +8,35 @@ def _impute_VIP(data: pd.DataFrame) -> pd.DataFrame:
     data["VIP"] = data["VIP"].fillna(cond.map({True: True, False: False}))
     return data
 
-def impute_model_age(data: pd.DataFrame):
+def _impute_age(data: pd.DataFrame, reg) -> pd.DataFrame:
+    """Apply Reg Model"""
+    tmp = data[["VIP", "Spa", "Age"]]
+    tmp["VIP"] = tmp["VIP"].fillna(tmp["VIP"].median())
+    tmp["Spa"] = tmp["Spa"].fillna(tmp["Spa"].median())
+    age_imputed = reg.predict(tmp[["VIP", "Spa"]])
+    # Fill only if NA
+    tmp['Age'] = tmp['Age'].mask(tmp['Age'].isna(), age_imputed)
+    return tmp["Age"]
+
+def estimate_age_model(data: pd.DataFrame):
+    # HomePlanet
+    print(data.columns.values)
     tmp = data[["Age", "VIP", "Spa"]].notnull()
     y = tmp["Age"]
     X = tmp[["VIP", "Spa"]]
     reg = sk_linear_model.LinearRegression().fit(X, y)
     return reg
 
-def _impute_age(data: pd.DataFrame) -> pd.DataFrame:
-    # Earth -> VIP = False
-    ...
-    return data
-
 def get_imputers(data: pd.DataFrame) -> dict:
     """Gets different encodes"""
     imputers = {}
-    imputers["Age"] = impute_model_age(data)
+    imputers["Age"] = estimate_age_model(data)
     return imputers
 
 def impute(data: pd.DataFrame, imputers: dict):
     """Fill NAs, # TODO: Use mode without NA"""
     data = _impute_VIP(data)
-    data["Age"] = data["Age"].fillna(data["Age"].median())
+    data["Age"] = _impute_age(data, imputers["Age"])
     data["Cabin_Num"] = (data["Cabin_Num"].fillna(data["Cabin_Num"].median()).astype(float))  # TODO: Use mode without NA
     data["Cabin_Deck"] = data["Cabin_Deck"].fillna(data["Cabin_Deck"].mode().values[0])
     data["Cabin_Side"] = data["Cabin_Side"].fillna(data["Cabin_Side"].mode().values[0])
