@@ -135,3 +135,7 @@ nohup*
 my_submission.csv
 settings.json
 *_cert
+
+data/
+rwanda_co2_predictions/rwanda/run/submission.csv
+rwanda_co2_predictions/rwanda/submission.csv

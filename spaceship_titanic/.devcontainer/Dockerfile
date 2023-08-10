@@ -8,5 +8,4 @@ FROM mcr.microsoft.com/vscode/devcontainers/python:3.9
 COPY .devcontainer/Dockerfile .devcontainer/sgre_zscaler_cert* /etc/ssl/certs/
 RUN cat /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/sgre_zscaler_cert > /etc/ssl/certs/ca-certificates.crt; exit 0
 ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
-
-RUN pip install "poetry==1.3.2"
+ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
