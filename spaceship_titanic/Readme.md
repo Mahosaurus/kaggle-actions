@@ -1,1 +1,1 @@
-https://www.kaggle.com/competitions/spaceship-titani
+https://www.kaggle.com/competitions/spaceship-titanic
