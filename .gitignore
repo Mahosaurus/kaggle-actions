@@ -139,3 +139,4 @@ settings.json
 data/
 rwanda_co2_predictions/rwanda/run/submission.csv
 rwanda_co2_predictions/rwanda/submission.csv
+improve_fixed_model/improve/submission.csv
