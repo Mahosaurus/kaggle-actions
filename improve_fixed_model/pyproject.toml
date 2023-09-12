@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "rwanda"
+name = "improve"
 version = "0.0.1"
 description = ""
 authors = ["Mahosaurus"]
@@ -16,6 +16,7 @@ xgboost = "^1.7.6"
 seaborn = "^0.12.2"
 statsmodels = "^0.14.0"
 tqdm = "^4.65.1"
+ipykernel = "^6.25.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.1.0"

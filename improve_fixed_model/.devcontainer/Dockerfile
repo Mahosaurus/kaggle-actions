@@ -8,3 +8,5 @@ COPY .devcontainer/Dockerfile .devcontainer/sgre_zscaler_cert* /etc/ssl/certs/
 RUN cat /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/sgre_zscaler_cert > /etc/ssl/certs/ca-certificates.crt; exit 0
 ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
 ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+
+USER root
